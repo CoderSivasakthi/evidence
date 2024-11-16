@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #343a40;
+}
+
+.file-input input {
+    border: 1px solid #ced4da;
+}

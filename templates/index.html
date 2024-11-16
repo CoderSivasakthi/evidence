@@ -1,10 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidence Collection Screen</title>
+
+    <link rel="shortcut icon" href="../1600X900-How-does-blockchain-work.jpg" type="image/x-icon"/>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Import Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet"/>
+
+    <!-- Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #343a40;
+        }
+        .file-input input {
+            border: 1px solid #ced4da;
+        }
+    </style>
 </head>
 <body>
-$END$
+    <div class="container col-lg-6 col-md-9 col-sm-10">
+        <form class="justify-content-center shadow rounded-3 m-3 mt-5 p-5 p-xs-3" id="evidenceForm" enctype="multipart/form-data">
+            <div class="d-flex justify-content-center">
+                <h1>Evidence Collection</h1>
+            </div>
+
+            <label class="py-2" for="caseId">Case ID :</label>
+            <div class="py-2 file-input">
+                <input class="form-control" type="text" id="caseId" name="hash" required>
+            </div>
+
+            <label class="py-2" for="evidenceId">Evidence ID :</label>
+            <input type="text" class="py-2 form-control" id="evidenceId" name="evidenceId" required>
+
+            <label class="py-2" for="crimeType">Crime Type :</label>
+            <select class="py-2 form-select" id="crimeType" name="crimeType" required>
+                <option value="" disabled selected>-- Select Crime Type --</option>
+                <option value="Theft">Theft</option>
+                <option value="Assault">Assault</option>
+                <option value="Fraud">Fraud</option>
+                <option value="Cybercrime">Cybercrime</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label class="py-2" for="crimeDescription">Crime Description :</label>
+            <textarea class="py-2 form-control" id="crimeDescription" name="crimeDescription" rows="4" required></textarea>
+
+            <label class="py-2" for="evidenceDetails">Evidence Details :</label>
+            <textarea class="py-2 form-control" id="evidenceDetails" name="evidenceDetails" rows="4" required></textarea>
+
+            <label class="py-2" for="crimeArea">Crime Area :</label>
+            <input class="py-2 form-control" type="text" id="crimeArea" name="crimeArea" required>
+
+            <label class="py-2" for="witnesses">Eye Witnesses (Optional) :</label>
+            <input class="py-2 form-control" type="text" id="witnesses" name="witnesses">
+
+            <label class="py-2" for="uploadEvidence">Upload Evidence File :</label>
+            <div class="py-2 file-input">
+                <input class="form-control" type="file" id="uploadEvidence" name="uploadEvidence" required>
+            </div>
+
+            <div class="py-3 d-flex justify-content-center">
+                <button type="button" class="btn btn-primary py-2 px-5" id="submitBtn">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // First event listener: Regular submission handling
+        document.getElementById("submitBtn").addEventListener("click", async function(event) {
+            event.preventDefault();
+
+            const form = document.getElementById("evidenceForm");
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/submit-evidence', {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Success",
+                        text: result.message || "Data successfully uploaded",
+                        icon: "success",
+                    });
+                    form.reset(); // Clear the form after successful submission
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: result.error || "Something went wrong",
+                        icon: "error",
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to submit the data. Please try again.",
+                    icon: "error",
+                });
+            }
+        });
+
+        // Second event listener: Submission with redirect after 5 seconds
+        document.getElementById("submitBtn").addEventListener("click", async function(event) {
+            event.preventDefault();
+
+            const form = document.getElementById("evidenceForm");
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/submit-evidence', {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: "Success",
+                        text: result.message || "Data successfully uploaded",
+                        icon: "success",
+                        timer: 5000, // Timer set for 5 seconds
+                        timerProgressBar: true,
+                        didClose: () => {
+                            // Redirect to CaseDetailsPage.html after 5 seconds
+                            window.location.href = "Case_Details.html";
+                        }
+                    });
+                    form.reset(); // Clear the form after successful submission
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: result.error || "Something went wrong",
+                        icon: "error",
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to submit the data. Please try again.",
+                    icon: "error",
+                });
+            }
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>
 </html>
